@@ -14,12 +14,18 @@ async function main() {
   core.debug(`received context: ${JSON.stringify(context, null, 2)}`);
   checkSupportedEvent(context.eventName, [Event.Push]);
   const inputs = getInputs({
-    example: stringInput(),
+    "template-repository": stringInput(),
+    "github-token": stringInput(),
   });
+  const config = {};
+  core.debug(
+    `creating handler with config: ${JSON.stringify(config, null, 2)}`
+  );
   const handler = createHandler({
-    context,
     config: {
-      example: inputs.example,
+      templateRepository: inputs["template-repository"],
+      owner: inputs["template-repository"].split("/")[0],
+      gitHubToken: inputs["github-token"],
     },
   });
   const outputs = await handler.handle();
