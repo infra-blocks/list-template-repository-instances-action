@@ -6,8 +6,7 @@ inputs:
     description: |
       The token used to authenticate in GitHub api calls. It should be a PAT because queries are made against the whole
       organization.
-    required:
-      true
+    required: true
   template-repository:
     description: The template repository to list instances of. Defaults to the current repository.
     required: false
