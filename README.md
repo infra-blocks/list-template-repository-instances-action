@@ -1,10 +1,31 @@
-# github-action-typescript-template
+# list-template-repository-instances-action
 
-TO COME.
+This GitHub Action lists all the repositories that have been instantiated using the provided template repository
+as input.
+
+Given a template repository `org/template-repo`, this action will return all the repos under organization
+`org` that have been created with the `org/template-repo` template.
+
+The output is a JSON stringified list of all the responses of the [api calls](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository)
+for repositories that have the "template_repository" field matching the provided input.
 
 ## Usage
 
-TO COME.
+```yaml
+jobs:
+  do-stuff:
+    steps:
+      # List repository instances
+      - name: List repositories instantiating this template
+        id: list-template-instances
+        uses: infrastructure-blocks/list-template-repository-instances-action@v0
+        with:
+          # A PAT should be used here as we are querying an organization or a user's list of repositories
+          github-token: ${{ secrets.github-pat }}
+      - name: Do something with the ouput
+        run: |
+          echo "Found repos: ${{ (fromJson(steps.list-template-instances.outputs.instances)).*.full_name }}"
+```
 
 ## Development
 
