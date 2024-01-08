@@ -14,6 +14,8 @@ inputs:
 outputs:
   instances:
     description: A JSON array of all the repositories instantiating the provided template.
+  instances-length:
+    description: The number of instances returned.
 runs:
   using: "docker"
   image: Dockerfile
