@@ -24,7 +24,8 @@ export interface Config {
 }
 
 export interface ListTemplateRepositoryInstancesOutputs extends Outputs {
-  ["instances"]: string;
+  instances: string;
+  "instances-length": string;
 }
 
 export class ListTemplateRepositoryInstancesHandler
@@ -45,6 +46,7 @@ export class ListTemplateRepositoryInstancesHandler
     const instances = await this.findTemplateRepositoryInstances();
     return {
       instances: JSON.stringify(instances),
+      "instances-length": JSON.stringify(instances.length),
     };
   }
 

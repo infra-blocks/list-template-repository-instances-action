@@ -12,9 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./
-        id: self-test
+        id: without-instances
+        with:
+          github-token: ${{ secrets.PAT }}
+      - name: Show outputs
+        run: |
+          echo "instances=${{ steps.without-instances.outputs.instances }}"
+          echo "instances-length=${{ steps.without-instances.outputs.instances-length }}"
+      - uses: ./
+        id: with-instances
         with:
           github-token: ${{ secrets.PAT }}
           template-repository: infrastructure-blocks/ts-lib-template
-      - run: |
-          echo ${{ steps.self-test.outputs.instances }}
+      - name: Show outputs
+        run: |
+          echo "instances=${{ steps.with-instances.outputs.instances }}"
+          echo "instances-length=${{ steps.with-instances.outputs.instances-length }}"
