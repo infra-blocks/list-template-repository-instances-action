@@ -1,82 +1,53 @@
-import { GitHubClient } from "@infra-blocks/github";
-import VError from "verror";
+import {
+  GitHubClient,
+  Repository,
+  RepositoryShort,
+} from "@infra-blocks/github";
+import { ListTemplateRepositoryInstancesActionError } from "./error.js";
+import { HandlerOutputs, HandlerParams } from "./types.js";
 
-// TODO: move into lib?
-export type Outputs = Record<string, string>;
-
-export interface Handler<O extends Outputs = Outputs> {
-  handle(): Promise<O>;
-}
-
-export interface Config {
-  /**
-   * The GitHub organization to query.
-   */
-  owner: string;
-  /**
-   * The template repository's full name (owner/repo)
-   */
-  templateRepository: string;
-  /**
-   * The GitHub token to make authenticated calls to the API.
-   */
-  gitHubToken: string;
-}
-
-export interface ListTemplateRepositoryInstancesOutputs extends Outputs {
-  instances: string;
-  "instances-length": string;
-}
-
-export class ListTemplateRepositoryInstancesHandler
-  implements Handler<ListTemplateRepositoryInstancesOutputs>
-{
-  private static ERROR_NAME = "ListTemplateRepositoryInstancesHandlerError";
-
-  private readonly config: Config;
+export class ListTemplateRepositoryInstancesHandler {
+  private readonly templateRepository: string;
   private readonly github: GitHubClient;
 
-  constructor(params: { config: Config; github: GitHubClient }) {
-    const { config, github } = params;
-    this.config = config;
+  constructor(params: { templateRepository: string; github: GitHubClient }) {
+    const { templateRepository, github } = params;
+    this.templateRepository = templateRepository;
     this.github = github;
   }
 
-  async handle(): Promise<ListTemplateRepositoryInstancesOutputs> {
+  async handle(): Promise<HandlerOutputs> {
     const instances = await this.findTemplateRepositoryInstances();
     return {
-      instances: JSON.stringify(instances),
-      "instances-length": JSON.stringify(instances.length),
+      instances,
+      "instances-count": instances.length,
     };
   }
 
-  private async findTemplateRepositoryInstances() {
-    const owner = this.config.owner;
-    const repos = await this.listOwnerRepos();
+  private async findTemplateRepositoryInstances(): Promise<Array<Repository>> {
+    const owner = this.getOwner();
+    const repos = await this.listOwnerRepos({ owner });
 
-    const templateInstances = [];
-    // Get them one by one to see if they have the same template repository.
-    for (const repo of repos) {
-      const fullRepo = await this.github.getRepository({
-        owner,
-        repository: repo.name,
-      });
-      if (
-        fullRepo.template_repository?.full_name ===
-        this.config.templateRepository
-      ) {
-        templateInstances.push(fullRepo);
-      }
-    }
-    return templateInstances;
+    // Get the full information on each repo to extract the template.
+    const fullRepos = await Promise.all(
+      repos.map((repo) =>
+        this.github.getRepository({ owner, repository: repo.name }),
+      ),
+    );
+    // Keep only the repos that have the target template repository.
+    return fullRepos.filter(
+      (repo) => repo.template_repository?.full_name === this.templateRepository,
+    );
   }
 
-  private async listOwnerRepos() {
+  private async listOwnerRepos(params: {
+    owner: string;
+  }): Promise<Array<RepositoryShort>> {
+    const { owner } = params;
+
     // First, we need to figure out if the owner is a user or an org, as they don't have the same
     // endpoints to list their repos.
-    const owner = this.config.owner;
     const ownerInfo = await this.github.getUser({ user: owner });
-
     switch (ownerInfo.type) {
       case "User":
         return this.github.listUserRepositories({ user: owner });
@@ -85,17 +56,23 @@ export class ListTemplateRepositoryInstancesHandler
           organization: owner,
         });
       default:
-        throw new VError(
-          { name: ListTemplateRepositoryInstancesHandler.ERROR_NAME },
-          `unknown owner type: ${ownerInfo.type} for owner: ${owner}`
+        throw new ListTemplateRepositoryInstancesActionError(
+          {},
+          `unknown owner type: ${ownerInfo.type} for owner: ${owner}`,
         );
     }
   }
+
+  private getOwner(): string {
+    return this.templateRepository.split("/")[0];
+  }
 }
+export function handler(params: HandlerParams): Promise<HandlerOutputs> {
+  const { gitHubPat, templateRepository } = params;
+  const github = GitHubClient.create({ gitHubToken: gitHubPat });
 
-export function createHandler(params: { config: Config }): Handler {
-  const { config } = params;
-  const github = GitHubClient.create({ gitHubToken: config.gitHubToken });
-
-  return new ListTemplateRepositoryInstancesHandler({ github, config });
+  return new ListTemplateRepositoryInstancesHandler({
+    templateRepository,
+    github,
+  }).handle();
 }

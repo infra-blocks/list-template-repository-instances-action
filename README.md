@@ -9,44 +9,33 @@ Given a template repository `org/template-repo`, this action will return all the
 The output is a JSON stringified list of all the responses of the [api calls](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository)
 for repositories that have the "template_repository" field matching the provided input.
 
+## Inputs
+
+|        Name         | Required | Description                                                                                                |
+|:-------------------:|:--------:|------------------------------------------------------------------------------------------------------------|
+|     github-pat      |   true   | The GitHub token used to make API calls. Because the API calls are organization wide, they required a PAT. |
+| template-repository |  false   | The template repository to list instances for. Defaults to ${{ github.repository }}                        |
+
+## Outputs
+
+|      Name       | Description                                                                                                                                                                                                                                                                  |
+|:---------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    instances    | A stringified JSON array of repository objects for which the template repository is the one provided as input. The repository objects are the ones returned by the [get repository API](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository). |
+| instances-count | The count of instances returned by the above.                                                                                                                                                                                                                                |
+
 ## Usage
 
 ```yaml
-jobs:
-  do-stuff:
-    steps:
-      # List repository instances
-      - name: List repositories instantiating this template
-        id: list-template-instances
-        uses: infrastructure-blocks/list-template-repository-instances-action@v0
-        with:
-          # A PAT should be used here as we are querying an organization or a user's list of repositories
-          github-token: ${{ secrets.github-pat }}
-      - name: Do something with the ouput
-        run: |
-          echo "Found repos: ${{ (fromJson(steps.list-template-instances.outputs.instances)).*.full_name }}"
+- uses: docker://public.ecr.aws/infrastructure-blocks/list-template-repository-instances-action:v2
+  with:
+    github-pat: ${{ secrets.PAT }}
 ```
 
-## Development
+## Releasing
 
-This project is written in Typescript and leverages `nvm` to manage its version. It also uses Git hooks
-to automatically build and commit compiled code. This last part emerges from the fact that GitHub actions
-run Javascript (and not typescript) and that all the node_modules/ are expected to be provided in the Git
-repository of the action.
+The CI fully automates the release process. The only manual intervention required is to assign a semantic
+versioning label to the pull request before merging (this is a required check). Upon merging, the
+release process kicks off. It manages a set of semantic versioning git tags,
+as described [here](https://github.com/infrastructure-blocks/git-tag-semver-action).
 
-Having a Git hook to compile automatically helps in diminishing the chances that a developer forgets to
-provide the compiled sources in a change request.
-
-### Setup
-
-Once `nvm` is installed, simply run the following:
-
-```
-nvm install
-npm install
-``` 
-
-### Releasing
-
-The releasing is handled at git level with semantic versioning tags. Those are automatically generated and managed
-by the [git-tag-semver-from-label-workflow](https://github.com/infrastructure-blocks/git-tag-semver-from-label-workflow).
+Upon tagging the default branch, jobs to tag docker images with the same tags will kick off.

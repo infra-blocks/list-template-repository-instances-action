@@ -1,0 +1,9 @@
+services:
+  action:
+    image: public.ecr.aws/infrastructure-blocks/list-template-repository-instances-action:latest
+    build:
+      context: ../
+      dockerfile: docker/action/Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION:?must be provided}
+    container_name: list-template-repository-instances-action
