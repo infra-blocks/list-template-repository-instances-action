@@ -1,13 +1,13 @@
 import VError from "verror";
 
-export class DockerTypescriptActionTemplateError extends VError {
+export class ListTemplateRepositoryInstancesActionError extends VError {
   constructor(
     options: Omit<VError.Options, "name">,
     message: string,
     ...params: unknown[]
   ) {
     super(
-      { ...options, name: DockerTypescriptActionTemplateError.name },
+      { ...options, name: ListTemplateRepositoryInstancesActionError.name },
       message,
       ...params,
     );

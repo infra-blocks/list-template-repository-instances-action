@@ -1,36 +1,34 @@
-# docker-action-template
+# list-template-repository-instances-action
 
-A template repository for GitHub Actions hosted as docker images on registries.
+This GitHub Action lists all the repositories that have been instantiated using the provided template repository
+as input.
 
-## Instantiation checklist
+Given a template repository `org/template-repo`, this action will return all the repos under organization
+`org` that have been created with the `org/template-repo` template.
 
-- Remove the [trigger update from template workflow](.github/workflows/trigger-update-from-template.yml)
-- Rename the docker image/container in [docker compose file](./docker/docker-compose.yml)
-- Edit the package.json to reflect the action's name and links
-- Run `nvm install`
-- Run `npm install`
-- Replace the self-test section of the [build-image workflow](.github/workflows/build-image.yml).
-- Set up code coverage
-- Replace the summary and the action usage section in this document.
+The output is a JSON stringified list of all the responses of the [api calls](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository)
+for repositories that have the "template_repository" field matching the provided input.
 
 ## Inputs
 
-|    Name       | Required | Description      |
-|:-------------:|:--------:|------------------|
-| example-input |  true    | A useless input. |
+|        Name         | Required | Description                                                                                                |
+|:-------------------:|:--------:|------------------------------------------------------------------------------------------------------------|
+|     github-pat      |   true   | The GitHub token used to make API calls. Because the API calls are organization wide, they required a PAT. |
+| template-repository |  false   | The template repository to list instances for. Defaults to ${{ github.repository }}                        |
 
 ## Outputs
 
-|     Name       | Description                    |
-|:--------------:|--------------------------------|
-| example-output | An equivalently useless output |
+|      Name       | Description                                                                                                                                                                                                                                                                  |
+|:---------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    instances    | A stringified JSON array of repository objects for which the template repository is the one provided as input. The repository objects are the ones returned by the [get repository API](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository). |
+| instances-count | The count of instances returned by the above.                                                                                                                                                                                                                                |
 
 ## Usage
 
 ```yaml
-- uses: docker://public.ecr.aws/infrastructure-blocks/docker-typescript-action-template:v1
+- uses: docker://public.ecr.aws/infrastructure-blocks/list-template-repository-instances-action:v2
   with:
-    example-input: hello
+    github-pat: ${{ secrets.PAT }}
 ```
 
 ## Releasing

@@ -1,11 +1,22 @@
+import { Repository } from "@infra-blocks/github";
+
 export interface Inputs {
-  "example-input"?: string;
+  "template-repository"?: string;
+  "github-pat"?: string;
 }
 
 export interface HandlerParams {
-  exampleInput: string;
+  /**
+   * The template repository's full name (owner/repo)
+   */
+  templateRepository: string;
+  /**
+   * The GitHub access token to make authenticated calls to the API.
+   */
+  gitHubPat: string;
 }
 
 export interface HandlerOutputs {
-  "example-output": string;
+  instances: Array<Repository>;
+  "instances-count": number;
 }

@@ -1,19 +1,25 @@
 import { z } from "zod";
-import { DockerTypescriptActionTemplateError } from "./error.js";
+import { ListTemplateRepositoryInstancesActionError } from "./error.js";
 import { HandlerParams, Inputs } from "./types.js";
+import { context } from "@actions/github";
 
 export function parseInputs(inputs: Inputs): HandlerParams {
   try {
     return z
       .object({
-        "example-input": z.string(),
+        // Default to github.repository.
+        "template-repository": z
+          .string()
+          .default(() => `${context.repo.owner}/${context.repo.repo}`),
+        "github-pat": z.string(),
       })
       .transform((parsed) => ({
-        exampleInput: parsed["example-input"],
+        templateRepository: parsed["template-repository"],
+        gitHubPat: parsed["github-pat"],
       }))
       .parse(inputs);
   } catch (err) {
-    throw new DockerTypescriptActionTemplateError(
+    throw new ListTemplateRepositoryInstancesActionError(
       { cause: err as Error },
       `error parsing inputs ${JSON.stringify(inputs)}`,
     );
