@@ -23,6 +23,12 @@ for repositories that have the "template_repository" field matching the provided
 |    instances    | A stringified JSON array of repository objects for which the template repository is the one provided as input. The repository objects are the ones returned by the [get repository API](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository). |
 | instances-count | The count of instances returned by the above.                                                                                                                                                                                                                                |
 
+## Permissions
+
+|     Scope     | Level | Reason   |
+|:-------------:|:-----:|----------|
+| pull-requests | read  | Because. |
+
 ## Usage
 
 ```yaml
