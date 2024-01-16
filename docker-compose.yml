@@ -1,7 +1,0 @@
-services:
-  action:
-    image: infra-blocks/list-template-repository-instances-action
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: list-template-repository-instances-action
