@@ -25,9 +25,7 @@ for repositories that have the "template_repository" field matching the provided
 
 ## Permissions
 
-|     Scope     | Level | Reason   |
-|:-------------:|:-----:|----------|
-| pull-requests | read  | Because. |
+Tied to the PAT.
 
 ## Usage
 
