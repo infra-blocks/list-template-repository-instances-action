@@ -1,13 +1,19 @@
 {
   "compilerOptions": {
     "declaration": true,
+<<<<<<< HEAD
     "importHelpers": true,
     "skipLibCheck": true,
     "module": "nodenext",
+=======
+    "skipLibCheck": true,
+    "module": "node16",
+>>>>>>> template/master
     "outDir": "dist",
     "strict": true,
     "target": "esnext",
     "sourceMap": true,
+<<<<<<< HEAD
     "allowJs": true,
     "lib": ["esnext"],
     "incremental": true,
@@ -15,4 +21,22 @@
   },
   "include": [ "src/**/*", "**/.eslintrc.js", "test/**/*", "nyc.config.js" ],
   "exclude": [ "dist/**/*" ]
+=======
+    "lib": [
+      "esnext"
+    ],
+    "noEmit": true,
+    "incremental": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.json",
+    "**/*.cjs",
+    "**/.eslintrc.cjs",
+    "**/.mocharc.cjs"
+  ],
+  "exclude": [
+    "dist/**/*"
+  ]
+>>>>>>> template/master
 }

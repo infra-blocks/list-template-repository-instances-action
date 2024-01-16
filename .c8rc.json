@@ -1,4 +1,10 @@
 {
+<<<<<<< HEAD
   "src": ["src"],
+=======
+  "src": [
+    "src"
+  ],
+>>>>>>> template/master
   "all": true
 }

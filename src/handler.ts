@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { GitHubClient } from "@infra-blocks/github";
 import VError from "verror";
 
@@ -98,4 +99,18 @@ export function createHandler(params: { config: Config }): Handler {
   const github = GitHubClient.create({ gitHubToken: config.gitHubToken });
 
   return new ListTemplateRepositoryInstancesHandler({ github, config });
+=======
+import core from "@actions/core";
+import { HandlerOutputs } from "./types.js";
+
+export function handler(params: {
+  exampleInput: string;
+}): Promise<HandlerOutputs> {
+  const { exampleInput } = params;
+  core.info("Running handler!");
+  core.info(`received your input: ${exampleInput}`);
+  return Promise.resolve({
+    "example-output": "BYE!",
+  });
+>>>>>>> template/master
 }

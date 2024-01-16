@@ -2,7 +2,16 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "noEmit": false,
+<<<<<<< HEAD
     "declaration": false
   },
   "include": ["src/**/*"]
+=======
+    "declaration": false,
+    "incremental": false
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+>>>>>>> template/master
 }

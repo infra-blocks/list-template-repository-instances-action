@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import * as core from "@actions/core";
 import { context } from "@actions/github";
 import { createHandler } from "./handler.js";
@@ -30,3 +31,12 @@ async function main() {
 }
 
 main().catch((err: Error) => core.setFailed(VError.fullStack(err)));
+=======
+import { getInputs, runActionHandler } from "@infra-blocks/github-actions";
+import { handler } from "./handler.js";
+import { parseInputs } from "./inputs.js";
+
+runActionHandler(() => {
+  return handler(parseInputs(getInputs("example-input")));
+});
+>>>>>>> template/master
