@@ -1,6 +1,6 @@
 services:
   action:
-    image: public.ecr.aws/infrastructure-blocks/list-template-repository-instances-action:latest
+    image: public.ecr.aws/infra-blocks/list-template-repository-instances-action:latest
     build:
       context: ../
       dockerfile: docker/action/Dockerfile
