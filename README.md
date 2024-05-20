@@ -3,7 +3,7 @@
 [![Release](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/release.yml/badge.svg)](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/release.yml)
 [![Git Tag](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/git-tag.yml/badge.svg)](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/git-tag.yml)
 [![Update From Template](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/update-from-template.yml/badge.svg)](https://github.com/infra-blocks/list-template-repository-instances-action/actions/workflows/update-from-template.yml)
-[![codecov](https://codecov.io/gh/infra-blocks/list-template-repository-instances-action/graph/badge.svg?token=4QEW1CVMJ0)](https://codecov.io/gh/infra-blocks/list-template-repository-instances-action)
+[![codecov](https://codecov.io/gh/infra-blocks/list-template-repository-instances-action/graph/badge.svg?token=SUMSKEDJXV)](https://codecov.io/gh/infra-blocks/list-template-repository-instances-action)
 
 This GitHub Action lists all the repositories that have been instantiated using the provided template repository
 as input.
